@@ -1,6 +1,6 @@
 {
 	"name": "ROS 2 Workspace",
-	"image": "mcr.microsoft.com/devcontainers/base:ubuntu26.04",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
 	"features": {
 		// For CUDA support uncomment the following line.
 		// "ghcr.io/devcontainers/features/nvidia-cuda:3": {
@@ -9,7 +9,7 @@
 		// For GUI applications on native Linux using X11, uncomment this feature.
 		// "ghcr.io/althack/devcontainers/linux-x11-forwarding:0": {},
 		"ghcr.io/althack/devcontainers/ros2:0": {
-			"distro": "lyrical",
+			"distro": "jazzy",
 			"package": "desktop"
 		}
 	},
