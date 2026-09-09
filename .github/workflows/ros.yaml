@@ -3,45 +3,26 @@ name: ROS
 on:
   pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   test:
-    name: Test
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup ROS
-        uses: ros-tooling/setup-ros@v0.7
+      - name: Test in devcontainer
+        uses: devcontainers/ci@v0.3
         with:
-          required-ros-distributions: jazzy
-
-      - name: Cache build artifacts
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.ccache
-            build/
-            install/
-            log/
-          key: ${{ runner.os }}-ros-${{ hashFiles('src/**/package.xml', 'src/**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-ros-
-
-      - name: Setup and build
-        run: |
-          source /opt/ros/jazzy/setup.bash
-          ./setup.sh
-          ./build.sh
-
-      - name: Run tests
-        run: |
-          source /opt/ros/jazzy/setup.bash
-          source install/setup.bash
-          ./test.sh
+          push: never
+          runCmd: |
+            ./setup.sh
+            ./build.sh
+            ./test.sh
 
   lint:
     name: ament_${{ matrix.linter }}
@@ -49,29 +30,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter: [cppcheck, cpplint, uncrustify, lint_cmake, xmllint, flake8, pep257]
+        linter:
+          - cppcheck
+          - cpplint
+          - uncrustify
+          - lint_cmake
+          - xmllint
+          - flake8
+          - pep257
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-  
-      - name: Setup ROS
-        uses: ros-tooling/setup-ros@v0.7
-        with:
-          required-ros-distributions: jazzy
-  
-      - name: Install ament linters
-        run: |
-          sudo apt update
-          # Only install the specific linter needed
-          sudo apt install -y python3-ament-${{ matrix.linter }}
 
-      - name: Run linter
-        run: .github/scripts/lint.sh ${{ matrix.linter }}
+      - name: Run linter in devcontainer
+        uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: .github/scripts/lint.sh ${{ matrix.linter }}
 
   complete:
-    name: All checks passed
-    needs: [test, lint]
+    name: Tests passed
+    needs:
+      - lint
+      - test
     runs-on: ubuntu-latest
-    if: always()
     steps:
-      - run: echo "All CI checks completed!"
+      - name: Check
+        run: echo "Completed successfully!"
