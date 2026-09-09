@@ -53,11 +53,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-
+  
       - name: Setup ROS
         uses: ros-tooling/setup-ros@v0.7
         with:
-          required-ros-distributions: jazzy
+          required-ros-distributions: humble
+  
+      - name: Install ament linters
+        run: |
+          sudo apt update
+          # Only install the specific linter needed
+          sudo apt install -y python3-ament-${{ matrix.linter }}
 
       - name: Run linter
         run: .github/scripts/lint.sh ${{ matrix.linter }}
