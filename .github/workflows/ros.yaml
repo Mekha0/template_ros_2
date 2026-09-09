@@ -57,7 +57,7 @@ jobs:
       - name: Setup ROS
         uses: ros-tooling/setup-ros@v0.7
         with:
-          required-ros-distributions: humble
+          required-ros-distributions: jazzy
   
       - name: Install ament linters
         run: |
