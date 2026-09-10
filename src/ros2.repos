@@ -8,3 +8,7 @@ repositories:
     type: git
     url: https://github.com/ros2/examples.git
     version: ${ROS_DISTRO}
+  auv-jetson:
+    type: git
+    url: https://github.com/Mekha0/auv-jetson.git
+    version: main
